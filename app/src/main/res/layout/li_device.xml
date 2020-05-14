@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="4dp">
+
+    <TextView
+        android:id="@+id/tvDeviceNameLi"
+        style="@style/ListElementMainText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Eszköznév" />
+
+    <TextView
+        android:id="@+id/tvDeviceTypeLi"
+        style="@style/ListElementSecondaryText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvDeviceNameLi"
+        tools:text="Gyártó - típus" />
+
+    <TextView
+        android:id="@+id/tvCategoryLi"
+        style="@style/ListElementCategory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/tvLocationLi"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Videó" />
+
+    <TextView
+        android:id="@+id/tvLocationLi"
+        style="@style/ListElementLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="110" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

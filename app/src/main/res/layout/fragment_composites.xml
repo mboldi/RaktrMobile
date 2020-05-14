@@ -6,12 +6,21 @@
     android:layout_height="match_parent"
     tools:context=".ui.compositeItems.CompositeItemFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvComposites"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/srlCompositeItems"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingStart="@dimen/recycler_side_pad"
-        android:paddingEnd="@dimen/recycler_side_pad"/>
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvComposites"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingStart="@dimen/recycler_side_pad"
+            android:paddingEnd="@dimen/recycler_side_pad" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <TextView
         android:id="@+id/text_composites"
@@ -26,5 +35,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Composite items"/>
+        tools:text="Composite items" />
 </androidx.constraintlayout.widget.ConstraintLayout>
