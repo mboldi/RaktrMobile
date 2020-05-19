@@ -1,11 +1,15 @@
 package hu.bsstudio.raktrmobile.adapter
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import hu.bsstudio.raktrmobile.CompositeItemDetailsActivity
+import hu.bsstudio.raktrmobile.DeviceDetailsActivity
+import hu.bsstudio.raktrmobile.MainActivity
 import hu.bsstudio.raktrmobile.R
 import hu.bsstudio.raktrmobile.model.CompositeItem
 import kotlinx.android.synthetic.main.li_composite.view.*
@@ -27,10 +31,20 @@ class CompositeItemAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.compositeNameTv.text = items[position].name
-        holder.compositeNumOfItemsTv.text = items[position].devices.size.toString().plus(" ")
+        val compositeItem = items[position]
+
+        holder.compositeNameTv.text = compositeItem.name
+        holder.compositeNumOfItemsTv.text = compositeItem.devices.size.toString().plus(" ")
             .plus(context?.getString(R.string.device))
-        holder.compositeLocationTv.text = items[position].location.name
+        holder.compositeLocationTv.text = compositeItem.location.name
+
+        holder.itemView.setOnClickListener {
+            val intent = Intent(context, CompositeItemDetailsActivity::class.java)
+            intent.putExtra(MainActivity.COMPOSITE_KEY, compositeItem)
+            intent.putExtra(MainActivity.EDIT_KEY, false)
+
+            context?.startActivity(intent)
+        }
     }
 
 

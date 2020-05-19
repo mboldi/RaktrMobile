@@ -1,5 +1,7 @@
 package hu.bsstudio.raktrmobile.model
 
+import java.io.Serializable
+
 data class Device(
     override var id: Long,
     override var name: String,
@@ -13,4 +15,4 @@ data class Device(
     var type: String,
     var value: Int,
     var weight: Int
-) : Scannable()
+) : Scannable(), Serializable

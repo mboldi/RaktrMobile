@@ -16,4 +16,5 @@
     <string name="menu_settings">Beállítások</string>
     <string name="search">Keresés</string>
     <string name="device">eszköz</string>
+    <string name="composite_weight">Összetett tömeg: ~</string>
 </resources>

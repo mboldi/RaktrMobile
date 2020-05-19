@@ -16,6 +16,13 @@ import androidx.appcompat.widget.Toolbar
 
 class MainActivity : AppCompatActivity() {
 
+    companion object {
+        const val DEVICE_KEY = "device_key"
+        const val COMPOSITE_KEY = "device_key"
+        const val RENT_KEY = "rent_key"
+        const val EDIT_KEY = "edit_key"
+    }
+
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {

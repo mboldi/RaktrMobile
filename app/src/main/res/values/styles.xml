@@ -61,4 +61,24 @@
         <item name="android:background">@drawable/location_bg</item>
     </style>
 
+    <style name="RentItemOut" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">14sp</item>
+        <item name="android:paddingStart">4dp</item>
+        <item name="android:paddingEnd">4dp</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:textColor">@color/primaryTextColor</item>
+        <item name="android:background">@drawable/red_bg</item>
+    </style>
+
+    <style name="RentItemBack" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">14sp</item>
+        <item name="android:paddingStart">4dp</item>
+        <item name="android:paddingEnd">4dp</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:textColor">@color/primaryTextColor</item>
+        <item name="android:background">@drawable/green_bg</item>
+    </style>
+
 </resources>

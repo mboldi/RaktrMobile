@@ -3,7 +3,7 @@
     package="hu.bsstudio.raktrmobile">
 
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -12,6 +12,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".RentDetailsActivity"></activity>
+        <activity android:name=".CompositeItemDetailsActivity" />
+        <activity android:name=".DeviceDetailsActivity" />
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_devices"

@@ -1,12 +1,16 @@
 package hu.bsstudio.raktrmobile.adapter
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import hu.bsstudio.raktrmobile.DeviceDetailsActivity
+import hu.bsstudio.raktrmobile.MainActivity
 import hu.bsstudio.raktrmobile.R
+import hu.bsstudio.raktrmobile.RentDetailsActivity
 import hu.bsstudio.raktrmobile.model.Rent
 import kotlinx.android.synthetic.main.li_rent.view.*
 
@@ -33,7 +37,15 @@ class RentAdapter(
         holder.rentDatesTv.text = currRent.outDate.plus(" - ")
             .plus(if (currRent.actBackDate.isNotEmpty()) currRent.actBackDate else currRent.expBackDate)
         holder.rentNumItemsTv.text =
-            currRent.devices.size.toString().plus(" ").plus(context?.getString(R.string.device))
+            currRent.rentItems.size.toString().plus(" ").plus(context?.getString(R.string.device))
+
+        holder.itemView.setOnClickListener {
+            val intent = Intent(context, RentDetailsActivity::class.java)
+            intent.putExtra(MainActivity.RENT_KEY, currRent)
+            intent.putExtra(MainActivity.EDIT_KEY, false)
+
+            context?.startActivity(intent)
+        }
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
