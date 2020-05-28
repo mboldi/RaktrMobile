@@ -34,8 +34,8 @@ class DevicesAdapter(
 
         holder.deviceNameTv.text = device.name
         holder.deviceTypeTv.text = device.maker.plus(" - ").plus(device.type)
-        holder.deviceCategoryTv.text = device.category.name
-        holder.deviceLocationTv.text = device.location.name
+        holder.deviceCategoryTv.text = device.category?.name
+        holder.deviceLocationTv.text = device.location?.name
 
         holder.itemView.setOnClickListener {
             val intent = Intent(context, DeviceDetailsActivity::class.java)

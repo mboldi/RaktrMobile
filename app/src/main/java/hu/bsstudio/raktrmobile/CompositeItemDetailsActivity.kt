@@ -9,15 +9,19 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import hu.bsstudio.raktrmobile.adapter.DevicesAdapter
 import hu.bsstudio.raktrmobile.model.CompositeItem
-import hu.bsstudio.raktrmobile.model.Device
+import hu.bsstudio.raktrmobile.model.Location
+import hu.bsstudio.raktrmobile.network.interactor.CompositeItemInteractor
 import kotlinx.android.synthetic.main.activity_composite_item_details.*
+import kotlinx.android.synthetic.main.activity_device_details.*
 
 class CompositeItemDetailsActivity : AppCompatActivity() {
 
     private var edit: Boolean = false
     private lateinit var compositeItem: CompositeItem
+    private val interactor = CompositeItemInteractor()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +39,40 @@ class CompositeItemDetailsActivity : AppCompatActivity() {
         btnBackComposite.setOnClickListener {
             finish()
         }
+
+        btnSaveComposite.setOnClickListener {
+            if (compositeItem.name != "") {
+                val updatedItem = updateCompositeItem()
+
+                interactor.updateCompositeItem(
+                    updatedItem,
+                    {
+                        Snackbar.make(btnSaveComposite, "Sikeresen mentve", Snackbar.LENGTH_LONG)
+                            .show()
+                        compositeItem = updatedItem
+                        edit = false
+                        updateViewsEditable()
+                    },
+                    {
+                        Snackbar.make(btnSaveComposite, "Nem sikerült menteni", Snackbar.LENGTH_LONG)
+                            .show()
+                    })
+            } else {
+                compositeItem = updateCompositeItem()
+
+                interactor.addCompositeItem(compositeItem,
+                    {
+                        Snackbar.make(btnSaveComposite, "Sikeresen mentve", Snackbar.LENGTH_LONG)
+                            .show()
+                        edit = false
+                        updateViewsEditable()
+                    },
+                    {
+                        Snackbar.make(btnSaveComposite, "Nem sikerült menteni", Snackbar.LENGTH_LONG)
+                            .show()
+                    })
+            }
+        }
     }
 
     override fun onResume() {
@@ -50,7 +88,7 @@ class CompositeItemDetailsActivity : AppCompatActivity() {
     }
 
     private fun loadItems() {
-        val adapter = DevicesAdapter(this, compositeItem.devices as MutableList<Device>)
+        val adapter = DevicesAdapter(this, compositeItem.devices)
         rvCompositeDetailsDevices.adapter = adapter
     }
 
@@ -68,7 +106,15 @@ class CompositeItemDetailsActivity : AppCompatActivity() {
                 setFieldValues()
             }
             R.id.detailsDelete -> {
-                //TODO delete device
+                interactor.deleteCompositeItem(compositeItem,
+                    { finish() },
+                    {
+                        Snackbar.make(
+                            tilDeviceDetailsName,
+                            "Nem lehetett kitörölni :(",
+                            Snackbar.LENGTH_LONG
+                        ).show()
+                    })
 
                 finish()
             }
@@ -80,9 +126,10 @@ class CompositeItemDetailsActivity : AppCompatActivity() {
     private fun setFieldValues() {
         tilCompositeDetailsName.editText?.setText(compositeItem.name)
         tilCompositeDetailsBarcode.editText?.setText(compositeItem.barcode)
-        tilCompositeDetailsLocation.editText?.setText(compositeItem.location.name)
+        tilCompositeDetailsLocation.editText?.setText(compositeItem.location?.name)
 
-        tvCompositeWeight.text = getString(R.string.composite_weight).plus(countSumWeight()).plus(" kg")
+        tvCompositeWeight.text =
+            getString(R.string.composite_weight).plus(countSumWeight()).plus(" kg")
     }
 
     private fun updateViewsEditable() {
@@ -101,5 +148,16 @@ class CompositeItemDetailsActivity : AppCompatActivity() {
         }
 
         return weight / 1000.0
+    }
+
+    private fun updateCompositeItem(): CompositeItem {
+        val updatedCompositeItem = compositeItem
+
+        updatedCompositeItem.name = tilCompositeDetailsName.editText?.text.toString()
+        updatedCompositeItem.barcode = tilCompositeDetailsBarcode.editText?.text.toString()
+        updatedCompositeItem.location =
+            Location(name = tilCompositeDetailsLocation.editText?.text.toString())
+
+        return updatedCompositeItem
     }
 }

@@ -34,9 +34,9 @@ class CompositeItemAdapter(
         val compositeItem = items[position]
 
         holder.compositeNameTv.text = compositeItem.name
-        holder.compositeNumOfItemsTv.text = compositeItem.devices.size.toString().plus(" ")
+        holder.compositeNumOfItemsTv.text = compositeItem.devices?.size.toString().plus(" ")
             .plus(context?.getString(R.string.device))
-        holder.compositeLocationTv.text = compositeItem.location.name
+        holder.compositeLocationTv.text = compositeItem.location?.name
 
         holder.itemView.setOnClickListener {
             val intent = Intent(context, CompositeItemDetailsActivity::class.java)

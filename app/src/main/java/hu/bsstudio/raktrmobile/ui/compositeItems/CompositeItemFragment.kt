@@ -8,12 +8,17 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
+import hu.bsstudio.raktrmobile.MainActivity
 import hu.bsstudio.raktrmobile.R
 import hu.bsstudio.raktrmobile.adapter.CompositeItemAdapter
-import hu.bsstudio.raktrmobile.model.*
+import hu.bsstudio.raktrmobile.model.CompositeItem
+import hu.bsstudio.raktrmobile.network.interactor.CompositeItemInteractor
 import kotlinx.android.synthetic.main.fragment_composites.*
 
 class CompositeItemFragment : Fragment() {
+
+    private val compositeItemInteractor = CompositeItemInteractor()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -22,13 +27,19 @@ class CompositeItemFragment : Fragment() {
     ): View? {
         val root = inflater.inflate(R.layout.fragment_composites, container, false)
 
+        MainActivity.CURRENT_TYPE = "composite"
+
         return root
     }
 
     override fun onResume() {
         super.onResume()
 
-        srlCompositeItems.setOnRefreshListener { loadItems() }
+        srlCompositeItems.setOnRefreshListener {
+            compositeItemInteractor.getCompositeItems(
+                this::loadItems
+            ) { Snackbar.make(rvComposites, "Adat letöltési hiba", Snackbar.LENGTH_LONG).show() }
+        }
 
         val divider: RecyclerView.ItemDecoration =
             DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
@@ -36,46 +47,20 @@ class CompositeItemFragment : Fragment() {
         rvComposites.layoutManager = LinearLayoutManager(context)
         rvComposites.addItemDecoration(divider)
 
-        loadItems()
+        compositeItemInteractor.getCompositeItems(
+            this::loadItems
+        ) { Snackbar.make(rvComposites, "Adat letöltési hiba", Snackbar.LENGTH_LONG).show() }
     }
 
-    private fun loadItems() {
-        val devices: MutableList<Device> = mutableListOf()
-        devices += Device(
-            1L,
-            "BSS320-1",
-            "B-1111",
-            Category(1L, "Videó"),
-            Location(3L, "110"),
-            "Sony",
-            1,
-            "11223344",
-            DeviceStatus.GOOD,
-            "PMW-320",
-            4500000,
-            8000
-        )
-        devices += Device(
-            2L,
-            "EX3",
-            "B-1121",
-            Category(1L, "Videó"),
-            Location(2L, "Páncél"),
-            "Sony",
-            1,
-            "11223344",
-            DeviceStatus.GOOD,
-            "PMW-EX3",
-            2500000,
-            4500
-        )
+    private fun loadItems(compositeItems: List<CompositeItem>) {
+        val compositeComparator = Comparator { c1: CompositeItem, c2: CompositeItem ->
+            c1.name.compareTo(c2.name)
+        }
 
-        val items = mutableListOf<CompositeItem>()
-        val loc110 = Location(2L, "110")
-        items += CompositeItem("B-WLRack-01", 1L, "Wireless rack", devices, loc110)
-        items += CompositeItem("B-kozvszett-01", 2L, "Közvetítőszett", devices, loc110)
-
-        val adapter = CompositeItemAdapter(context, items)
+        val adapter = CompositeItemAdapter(
+            context,
+            compositeItems.sortedWith(compositeComparator) as MutableList<CompositeItem>
+        )
         rvComposites.adapter = adapter
 
         srlCompositeItems.isRefreshing = false

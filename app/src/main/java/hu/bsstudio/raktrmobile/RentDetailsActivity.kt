@@ -69,11 +69,11 @@ class RentDetailsActivity : AppCompatActivity() {
     private fun countSumWeight(): Double {
         var weight = 0
 
-        rent.rentItems.forEach { rentItem ->
+        rent.rentItems?.forEach { rentItem ->
             if (rentItem.scannable.javaClass == Device::class.java) {
                 weight += (rentItem.scannable as Device).weight * rentItem.outQuantity
             } else {
-                (rentItem.scannable as CompositeItem).devices.forEach {
+                (rentItem.scannable as CompositeItem).devices?.forEach {
                     weight += it.weight
                 }
             }
@@ -85,11 +85,11 @@ class RentDetailsActivity : AppCompatActivity() {
     private fun countSumValue(): Int {
         var value = 0
 
-        rent.rentItems.forEach { rentItem ->
+        rent.rentItems?.forEach { rentItem ->
             if (rentItem.scannable.javaClass == Device::class.java) {
                 value += (rentItem.scannable as Device).value * rentItem.outQuantity
             } else {
-                (rentItem.scannable as CompositeItem).devices.forEach {
+                (rentItem.scannable as CompositeItem).devices?.forEach {
                     value += it.value
                 }
             }

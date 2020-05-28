@@ -37,7 +37,7 @@ class RentAdapter(
         holder.rentDatesTv.text = currRent.outDate.plus(" - ")
             .plus(if (currRent.actBackDate.isNotEmpty()) currRent.actBackDate else currRent.expBackDate)
         holder.rentNumItemsTv.text =
-            currRent.rentItems.size.toString().plus(" ").plus(context?.getString(R.string.device))
+            currRent.rentItems?.size.toString().plus(" ").plus(context?.getString(R.string.device))
 
         holder.itemView.setOnClickListener {
             val intent = Intent(context, RentDetailsActivity::class.java)
