@@ -1,8 +1,10 @@
 package hu.bsstudio.raktrmobile
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
@@ -12,6 +14,7 @@ import hu.bsstudio.raktrmobile.model.Device
 import hu.bsstudio.raktrmobile.model.DeviceStatus
 import hu.bsstudio.raktrmobile.model.Location
 import hu.bsstudio.raktrmobile.network.interactor.DeviceInteractor
+import hu.bsstudio.raktrmobile.network.interactor.MiscInteractor
 import kotlinx.android.synthetic.main.activity_device_details.*
 import java.lang.Integer.parseInt
 
@@ -19,8 +22,8 @@ class DeviceDetailsActivity : AppCompatActivity() {
     var edit: Boolean = false
     lateinit var device: Device
 
-    private val deviceInteractor =
-        DeviceInteractor()
+    private val deviceInteractor = DeviceInteractor()
+    private val miscInteractor = MiscInteractor()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +34,16 @@ class DeviceDetailsActivity : AppCompatActivity() {
 
         device = intent.extras?.get(MainActivity.DEVICE_KEY) as Device
         edit = intent.extras?.get(MainActivity.EDIT_KEY) as Boolean
+
+        if (edit) {
+            miscInteractor.getCategories(
+                this::setCategories
+            ) { Log.e("category", it.printStackTrace().toString()) }
+
+            miscInteractor.getLocations(
+                this::setLocations
+            ) { Log.e("location", it.printStackTrace().toString()) }
+        }
 
         setFieldValues()
         updateViewsEditable()
@@ -43,7 +56,7 @@ class DeviceDetailsActivity : AppCompatActivity() {
             if (device.name != "") {
                 val updatedDevice = updateDevice()
 
-                deviceInteractor.updateDevice(device,
+                deviceInteractor.updateDevice(updatedDevice,
                     {
                         Snackbar.make(btnSaveDevice, "Sikeresen mentve", Snackbar.LENGTH_LONG)
                             .show()
@@ -73,6 +86,38 @@ class DeviceDetailsActivity : AppCompatActivity() {
         }
     }
 
+    private fun setCategories(categories: List<Category>) {
+        val categoryNames = mutableListOf<String>()
+
+        categories.forEach {
+            categoryNames.add(it.name)
+        }
+
+        val adapter = ArrayAdapter(
+            this,
+            R.layout.dropdown_menu_popup_item,
+            categoryNames
+        )
+
+        tvDeviceCategory.setAdapter(adapter)
+    }
+
+    private fun setLocations(locations: List<Location>) {
+        val locationNames = mutableListOf<String>()
+
+        locations.forEach {
+            locationNames.add(it.name)
+        }
+
+        val adapter = ArrayAdapter(
+            this,
+            R.layout.dropdown_menu_popup_item,
+            locationNames
+        )
+
+        tvDeviceLocation.setAdapter(adapter)
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.details_menu, menu)
         return true
@@ -83,6 +128,16 @@ class DeviceDetailsActivity : AppCompatActivity() {
             R.id.detailsEdit -> {
                 edit = !edit
 
+                if (edit) {
+                    miscInteractor.getCategories(
+                        this::setCategories
+                    ) { Log.e("category", it.printStackTrace().toString()) }
+
+                    miscInteractor.getLocations(
+                        this::setLocations
+                    ) { Log.e("location", it.printStackTrace().toString()) }
+                }
+
                 updateViewsEditable()
                 setFieldValues()
             }
@@ -92,9 +147,11 @@ class DeviceDetailsActivity : AppCompatActivity() {
                     {
                         Snackbar.make(
                             tilDeviceDetailsName,
-                            "Nem lehetett kitörölni :(",
+                            "Nem sikerült kitörölni :(",
                             Snackbar.LENGTH_LONG
                         ).show()
+
+                        Log.e("delete", it.printStackTrace().toString())
                     })
             }
         }

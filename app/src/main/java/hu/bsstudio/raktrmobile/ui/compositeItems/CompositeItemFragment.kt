@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.fragment_composites.*
 
 class CompositeItemFragment : Fragment() {
 
-    private val compositeItemInteractor = CompositeItemInteractor()
+    private val interactor = CompositeItemInteractor()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,7 +36,7 @@ class CompositeItemFragment : Fragment() {
         super.onResume()
 
         srlCompositeItems.setOnRefreshListener {
-            compositeItemInteractor.getCompositeItems(
+            interactor.getCompositeItems(
                 this::loadItems
             ) { Snackbar.make(rvComposites, "Adat letöltési hiba", Snackbar.LENGTH_LONG).show() }
         }
@@ -47,7 +47,7 @@ class CompositeItemFragment : Fragment() {
         rvComposites.layoutManager = LinearLayoutManager(context)
         rvComposites.addItemDecoration(divider)
 
-        compositeItemInteractor.getCompositeItems(
+        interactor.getCompositeItems(
             this::loadItems
         ) { Snackbar.make(rvComposites, "Adat letöltési hiba", Snackbar.LENGTH_LONG).show() }
     }

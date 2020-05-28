@@ -8,6 +8,7 @@
         <item name="colorSecondary">@color/secondaryColor</item>
         <item name="colorAccent">@color/primaryTextColor</item>
         <item name="fontFamily">Montserrat</item>
+        <item name="android:datePickerDialogTheme">@style/MyDatePickerDialogTheme</item>
     </style>
 
     <style name="TopBarTheme" parent="Widget.MaterialComponents.Toolbar">
@@ -17,6 +18,12 @@
     <style name="ToolbarTextAppearance" parent="TextAppearance.MaterialComponents.Button">
         <item name="fontFamily">Montserrat</item>
         <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="MyDatePickerDialogTheme" parent="android:Theme.Material.Light.Dialog">
+        <item name="android:colorAccent">@color/secondaryColor</item>
+        <item name="android:buttonStyle">@style/Widget.MaterialComponents.Button.TextButton</item>
+        <item name="android:dialogCornerRadius">8dp</item>
     </style>
 
     <style name="backdropMenuStyle" parent="">

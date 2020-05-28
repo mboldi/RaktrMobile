@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.li_rent.view.*
 
 class RentAdapter(
     private val context: Context?,
-    private var rents: MutableList<Rent>
+    private var rents: List<Rent>
 ) : RecyclerView.Adapter<RentAdapter.ViewHolder>() {
     private val layoutInflater = LayoutInflater.from(context)
 
@@ -37,7 +37,7 @@ class RentAdapter(
         holder.rentDatesTv.text = currRent.outDate.plus(" - ")
             .plus(if (currRent.actBackDate.isNotEmpty()) currRent.actBackDate else currRent.expBackDate)
         holder.rentNumItemsTv.text =
-            currRent.rentItems?.size.toString().plus(" ").plus(context?.getString(R.string.device))
+            currRent.rentItems.size.toString().plus(" ").plus(context?.getString(R.string.device))
 
         holder.itemView.setOnClickListener {
             val intent = Intent(context, RentDetailsActivity::class.java)

@@ -1,8 +1,10 @@
 package hu.bsstudio.raktrmobile
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
@@ -14,6 +16,7 @@ import hu.bsstudio.raktrmobile.adapter.DevicesAdapter
 import hu.bsstudio.raktrmobile.model.CompositeItem
 import hu.bsstudio.raktrmobile.model.Location
 import hu.bsstudio.raktrmobile.network.interactor.CompositeItemInteractor
+import hu.bsstudio.raktrmobile.network.interactor.MiscInteractor
 import kotlinx.android.synthetic.main.activity_composite_item_details.*
 import kotlinx.android.synthetic.main.activity_device_details.*
 
@@ -22,6 +25,7 @@ class CompositeItemDetailsActivity : AppCompatActivity() {
     private var edit: Boolean = false
     private lateinit var compositeItem: CompositeItem
     private val interactor = CompositeItemInteractor()
+    private val miscInteractor = MiscInteractor()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +36,12 @@ class CompositeItemDetailsActivity : AppCompatActivity() {
 
         compositeItem = intent.extras?.get(MainActivity.COMPOSITE_KEY) as CompositeItem
         edit = intent.extras?.get(MainActivity.EDIT_KEY) as Boolean
+
+        if (edit) {
+            miscInteractor.getLocations(
+                this::setLocations
+            ) { Log.e("location", it.printStackTrace().toString()) }
+        }
 
         setFieldValues()
         updateViewsEditable()
@@ -49,7 +59,7 @@ class CompositeItemDetailsActivity : AppCompatActivity() {
                     {
                         Snackbar.make(btnSaveComposite, "Sikeresen mentve", Snackbar.LENGTH_LONG)
                             .show()
-                        compositeItem = updatedItem
+                        compositeItem = it
                         edit = false
                         updateViewsEditable()
                     },
@@ -58,10 +68,9 @@ class CompositeItemDetailsActivity : AppCompatActivity() {
                             .show()
                     })
             } else {
-                compositeItem = updateCompositeItem()
-
-                interactor.addCompositeItem(compositeItem,
+                interactor.addCompositeItem(updateCompositeItem(),
                     {
+                        compositeItem = it
                         Snackbar.make(btnSaveComposite, "Sikeresen mentve", Snackbar.LENGTH_LONG)
                             .show()
                         edit = false
@@ -101,6 +110,12 @@ class CompositeItemDetailsActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.detailsEdit -> {
                 edit = !edit
+
+                if (edit) {
+                    miscInteractor.getLocations(
+                        this::setLocations
+                    ) { Log.e("location", it.printStackTrace().toString()) }
+                }
 
                 updateViewsEditable()
                 setFieldValues()
@@ -159,5 +174,21 @@ class CompositeItemDetailsActivity : AppCompatActivity() {
             Location(name = tilCompositeDetailsLocation.editText?.text.toString())
 
         return updatedCompositeItem
+    }
+
+    private fun setLocations(locations: List<Location>) {
+        val locationNames = mutableListOf<String>()
+
+        locations.forEach {
+            locationNames.add(it.name)
+        }
+
+        val adapter = ArrayAdapter(
+            this,
+            R.layout.dropdown_menu_popup_item,
+            locationNames
+        )
+
+        tvCompositeLocation.setAdapter(adapter)
     }
 }

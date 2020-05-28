@@ -25,4 +25,12 @@ interface CompositeItemAPI {
     @Headers("Content-Type: application/json")
     @HTTP(method = "DELETE", path = "composite", hasBody = true)
     fun deleteCompositeItem(@Body compositeItem: JsonObject): Call<CompositeItem>
+
+    @Headers("Content-Type: application/json")
+    @PUT("composite/{id}")
+    fun addDeviceToComposite(@Path("id") id: Long, @Body compositeItem: JsonObject): Call<CompositeItem>
+
+    @Headers("Content-Type: application/json")
+    @HTTP(method = "DELETE", path = "composite/{id}", hasBody = true)
+    fun deleteDeviceFromComposite(@Path("id") id: Long, @Body compositeItem: JsonObject): Call<CompositeItem>
 }
