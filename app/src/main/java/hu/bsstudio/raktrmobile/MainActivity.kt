@@ -3,6 +3,7 @@ package hu.bsstudio.raktrmobile
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
@@ -42,19 +43,19 @@ class MainActivity : AppCompatActivity() {
         fab.setOnClickListener { view ->
             when(CURRENT_TYPE) {
                 "device" -> {
-                    intent = Intent(this, DeviceDetailsActivity::class.java)
+                    val intent = Intent(this, DeviceDetailsActivity::class.java)
                     intent.putExtra(DEVICE_KEY, Device())
                     intent.putExtra(EDIT_KEY, true)
                     startActivity(intent)
                 }
                 "composite" -> {
-                    intent = Intent(this, CompositeItemDetailsActivity::class.java)
+                    val intent = Intent(this, CompositeItemDetailsActivity::class.java)
                     intent.putExtra(COMPOSITE_KEY, CompositeItem())
                     intent.putExtra(EDIT_KEY, true)
                     startActivity(intent)
                 }
                 "rent" -> {
-                    intent = Intent(this, RentDetailsActivity::class.java)
+                    val intent = Intent(this, RentDetailsActivity::class.java)
                     intent.putExtra(RENT_KEY, Rent())
                     intent.putExtra(EDIT_KEY, true)
                     startActivity(intent)
@@ -78,6 +79,17 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.devices, menu)
         return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            R.id.scan -> {
+                val startIntent = Intent(this, ScannerActivity::class.java)
+                startActivity(startIntent)
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onSupportNavigateUp(): Boolean {

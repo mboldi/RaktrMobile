@@ -1,6 +1,7 @@
 package hu.bsstudio.raktrmobile
 
 import android.app.DatePickerDialog
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -20,7 +21,6 @@ import hu.bsstudio.raktrmobile.model.Rent
 import hu.bsstudio.raktrmobile.network.interactor.RentInteractor
 import kotlinx.android.synthetic.main.activity_device_details.*
 import kotlinx.android.synthetic.main.activity_rent_details.*
-import java.text.DateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -91,35 +91,65 @@ class RentDetailsActivity : AppCompatActivity() {
         }
 
         tilRentDetailOutDate.editText?.setOnClickListener {
-            DatePickerDialog(this, outDateListener, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show()
+            DatePickerDialog(
+                this,
+                outDateListener,
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            ).show()
         }
 
-        val expBackDateListener = DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
-            calendar.set(Calendar.YEAR, year)
-            calendar.set(Calendar.MONTH, month)
-            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-            updateDateLabel(tilRentDetailExpBackDate.editText!!)
-        }
+        val expBackDateListener =
+            DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
+                calendar.set(Calendar.YEAR, year)
+                calendar.set(Calendar.MONTH, month)
+                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                updateDateLabel(tilRentDetailExpBackDate.editText!!)
+            }
 
         tilRentDetailExpBackDate.editText?.setOnClickListener {
-            DatePickerDialog(this, expBackDateListener, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show()
+            DatePickerDialog(
+                this,
+                expBackDateListener,
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            ).show()
         }
 
-        val actBackDateListener = DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
-            calendar.set(Calendar.YEAR, year)
-            calendar.set(Calendar.MONTH, month)
-            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-            updateDateLabel(tilRentDetailActBackDate.editText!!)
-        }
+        val actBackDateListener =
+            DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
+                calendar.set(Calendar.YEAR, year)
+                calendar.set(Calendar.MONTH, month)
+                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                updateDateLabel(tilRentDetailActBackDate.editText!!)
+            }
 
         tilRentDetailActBackDate.editText?.setOnClickListener {
-            DatePickerDialog(this, actBackDateListener, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show()
+            DatePickerDialog(
+                this,
+                actBackDateListener,
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            ).show()
+        }
+
+        btnAddDeviceToRent.setOnClickListener {
+            val intent = Intent(this, ScannerActivity::class.java)
+            intent.putExtra(MainActivity.RENT_KEY, rent)
+            startActivity(intent)
         }
     }
 
     private fun updateDateLabel(editText: EditText) {
         val formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd.")
-        val date = LocalDate.of(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
+        val date = LocalDate.of(
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH) + 1,
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
 
         editText.setText(date.format(formatter))
     }
@@ -237,11 +267,41 @@ class RentDetailsActivity : AppCompatActivity() {
         rvRentDetailRentItems.layoutManager = LinearLayoutManager(this)
         rvRentDetailRentItems.addItemDecoration(divider)
 
+        updateFromServer()
+    }
+
+    private fun updateFromServer() {
+        interactor.getRent(rent,
+            this::updateData
+        ) {
+            Snackbar.make(
+                rvRentDetailRentItems,
+                "Nem sikerült lekérni",
+                Snackbar.LENGTH_LONG
+            ).show()
+        }
+    }
+
+    private fun updateData(rent: Rent) {
+        this.rent = rent
+
+        setFieldValues()
         loadItems()
     }
 
     private fun loadItems() {
-        val adapter = RentItemAdapter(this, rent.rentItems)
+        val adapter = RentItemAdapter(this, rent.rentItems) { rentItem ->
+            interactor.updateDeviceInRent(rent, rentItem,
+                { updateData(it) },
+                {
+                    Snackbar.make(
+                        rvRentDetailRentItems,
+                        "Nem sikerült menteni",
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                }
+            )
+        }
         rvRentDetailRentItems.adapter = adapter
     }
 }

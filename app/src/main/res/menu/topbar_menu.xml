@@ -7,8 +7,9 @@
         android:title="Keresés"
         app:showAsAction="always" />
     <item
-        android:id="@+id/filter"
-        android:icon="@drawable/ic_filter"
+        android:id="@+id/scan"
+        android:icon="@drawable/barcode_scanner_50"
+        android:iconTint="@color/white"
         android:title="Keresés"
         app:showAsAction="always" />
 

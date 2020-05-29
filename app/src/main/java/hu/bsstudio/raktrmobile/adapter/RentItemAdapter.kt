@@ -1,28 +1,31 @@
 package hu.bsstudio.raktrmobile.adapter
 
 import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.CheckBox
 import android.widget.TextView
-import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
-import hu.bsstudio.raktrmobile.CompositeItemDetailsActivity
-import hu.bsstudio.raktrmobile.DeviceDetailsActivity
-import hu.bsstudio.raktrmobile.MainActivity
 import hu.bsstudio.raktrmobile.R
 import hu.bsstudio.raktrmobile.model.BackStatus
-import hu.bsstudio.raktrmobile.model.CompositeItem
-import hu.bsstudio.raktrmobile.model.Device
 import hu.bsstudio.raktrmobile.model.RentItem
+import hu.bsstudio.raktrmobile.network.interactor.RentInteractor
 import kotlinx.android.synthetic.main.li_rent_item.view.*
+import java.lang.Integer.parseInt
 
 class RentItemAdapter(
     private val context: Context?,
-    private var items: MutableList<RentItem>
+    private var items: MutableList<RentItem>,
+    private val onItemUpdate: (RentItem) -> Unit
 ) : RecyclerView.Adapter<RentItemAdapter.ViewHolder>() {
+
+    private val interactor = RentInteractor()
 
     private val layoutInflater = LayoutInflater.from(context)
     override fun onCreateViewHolder(
@@ -43,7 +46,7 @@ class RentItemAdapter(
         holder.rentItemName.text = rentItem.scannable.name
         holder.rentItemQuantity.text = rentItem.outQuantity.toString().plus(" db")
 
-        when(rentItem.backStatus) {
+        when (rentItem.backStatus) {
             BackStatus.BACK -> {
                 holder.rentItemStatusBack.isVisible = true
                 holder.rentItemStatusOut.isVisible = false
@@ -55,7 +58,7 @@ class RentItemAdapter(
         }
 
         holder.itemView.setOnClickListener {
-            if(rentItem.scannable.javaClass == Device::class.java) {
+            /*if(rentItem.scannable.javaClass == Device::class.java) {
                 val intent = Intent(context, DeviceDetailsActivity::class.java)
                 intent.putExtra(MainActivity.DEVICE_KEY, rentItem.scannable as Device)
                 intent.putExtra(MainActivity.EDIT_KEY, false)
@@ -67,14 +70,39 @@ class RentItemAdapter(
                 intent.putExtra(MainActivity.EDIT_KEY, false)
 
                 context?.startActivity(intent)
+            }*/
+
+            if (holder.cvItemMenu.visibility == GONE) {
+                holder.etRentedQuantity?.setText(rentItem.outQuantity.toString())
+                if (rentItem.backStatus == BackStatus.BACK)
+                    holder.cbBack.isChecked = true
+
+                holder.cvItemMenu.visibility = VISIBLE
+                holder.rentItemQuantity.visibility = GONE
+            } else {
+                holder.cvItemMenu.visibility = GONE
+                holder.rentItemQuantity.visibility = VISIBLE
             }
+        }
+
+        holder.btnUpdateItem.setOnClickListener {
+            rentItem.outQuantity = parseInt(holder.etRentedQuantity?.text.toString())
+            rentItem.backStatus = if (holder.cbBack.isChecked) BackStatus.BACK else BackStatus.OUT
+
+            onItemUpdate(rentItem)
         }
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var rentItemName: TextView = itemView.tvRentedItemName
-        var rentItemStatusBack: TextView = itemView.tvRentItemStatusBack
-        var rentItemStatusOut: TextView = itemView.tvRentItemStatusOut
-        var rentItemQuantity: TextView = itemView.tvRentedItemQuantity
+        val rentItemName: TextView = itemView.tvRentedItemName
+        val rentItemStatusBack: TextView = itemView.tvRentItemStatusBack
+        val rentItemStatusOut: TextView = itemView.tvRentItemStatusOut
+        val rentItemQuantity: TextView = itemView.tvRentedItemQuantity
+
+        val btnUpdateItem: Button = itemView.btnUpdateRentItem
+        val etRentedQuantity = itemView.tilRentItemQuantity.editText
+        val cbBack: CheckBox = itemView.cbRentItemBack
+
+        val cvItemMenu: ConstraintLayout = itemView.cvItemMenu
     }
 }

@@ -56,7 +56,7 @@ class DevicesFragment : Fragment() {
         }
 
         adapter = DevicesAdapter(context,
-            devices.sortedWith(deviceComparator) as MutableList<Device>
+            devices.sortedWith(deviceComparator)
         )
         rvDevices.adapter = adapter
         srlDevices.isRefreshing = false

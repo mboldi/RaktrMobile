@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.li_composite.view.*
 
 class CompositeItemAdapter(
     private val context: Context?,
-    private var items: MutableList<CompositeItem>
+    private var items: List<CompositeItem>
 ) : RecyclerView.Adapter<CompositeItemAdapter.ViewHolder>() {
 
     private val layoutInflater = LayoutInflater.from(context)

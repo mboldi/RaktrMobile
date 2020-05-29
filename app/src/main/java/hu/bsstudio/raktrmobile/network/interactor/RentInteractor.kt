@@ -1,10 +1,12 @@
 package hu.bsstudio.raktrmobile.network.interactor
 
 import android.os.Handler
+import com.google.gson.GsonBuilder
 import hu.bsstudio.raktrmobile.MainActivity
-import hu.bsstudio.raktrmobile.model.Device
+import hu.bsstudio.raktrmobile.data.ScannableDeserializer
 import hu.bsstudio.raktrmobile.model.Rent
 import hu.bsstudio.raktrmobile.model.RentItem
+import hu.bsstudio.raktrmobile.model.Scannable
 import hu.bsstudio.raktrmobile.network.api.RentAPI
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -15,9 +17,13 @@ class RentInteractor {
     private val rentAPI: RentAPI
 
     init {
+        val gson = GsonBuilder()
+        .registerTypeAdapter(Scannable::class.java, ScannableDeserializer())
+        .create()
+
         val retrofit = Retrofit.Builder()
             .baseUrl(MainActivity.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
 
         this.rentAPI = retrofit.create(RentAPI::class.java)
@@ -49,6 +55,15 @@ class RentInteractor {
         runCallOnBackgroundThread(getDevicesRequest, onSuccess, onError)
     }
 
+    fun getRent(
+        rent: Rent,
+        onSuccess: (Rent) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
+        val getDevicesRequest = rentAPI.getRent(rent.id)
+        runCallOnBackgroundThread(getDevicesRequest, onSuccess, onError)
+    }
+
     fun addRent(
         rent: Rent,
         onSuccess: (Rent) -> Unit,
@@ -76,13 +91,13 @@ class RentInteractor {
         runCallOnBackgroundThread(deleteDeviceRequest, onSuccess, onError)
     }
 
-    fun getRent (
+    fun updateDeviceInRent (
         rent: Rent,
         rentItem: RentItem,
         onSuccess: (Rent) -> Unit,
         onError: (Throwable) -> Unit
     ) {
-        val updateRequest = rentAPI.updateDeviceInRent(rent.id, rentItem)
+        val updateRequest = rentAPI.updateDeviceInRent(rent.id, rentItem.toJsonWithRoot())
         runCallOnBackgroundThread(updateRequest, onSuccess, onError)
     }
 }

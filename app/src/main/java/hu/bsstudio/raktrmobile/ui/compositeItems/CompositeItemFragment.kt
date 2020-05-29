@@ -59,7 +59,7 @@ class CompositeItemFragment : Fragment() {
 
         val adapter = CompositeItemAdapter(
             context,
-            compositeItems.sortedWith(compositeComparator) as MutableList<CompositeItem>
+            compositeItems.sortedWith(compositeComparator)
         )
         rvComposites.adapter = adapter
 

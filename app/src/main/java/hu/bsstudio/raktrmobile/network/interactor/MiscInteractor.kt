@@ -1,11 +1,10 @@
 package hu.bsstudio.raktrmobile.network.interactor
 
 import android.os.Handler
+import com.google.gson.GsonBuilder
 import hu.bsstudio.raktrmobile.MainActivity
-import hu.bsstudio.raktrmobile.model.Category
-import hu.bsstudio.raktrmobile.model.CompositeItem
-import hu.bsstudio.raktrmobile.model.Location
-import hu.bsstudio.raktrmobile.model.Scannable
+import hu.bsstudio.raktrmobile.data.ScannableDeserializer
+import hu.bsstudio.raktrmobile.model.*
 import hu.bsstudio.raktrmobile.network.api.CategoryAPI
 import hu.bsstudio.raktrmobile.network.api.LocationAPI
 import hu.bsstudio.raktrmobile.network.api.ScannableAPI
@@ -20,9 +19,13 @@ class MiscInteractor {
     private val scannableAPI: ScannableAPI
 
     init {
+        val gson = GsonBuilder()
+            .registerTypeAdapter(Scannable::class.java, ScannableDeserializer())
+            .create()
+
         val retrofit = Retrofit.Builder()
             .baseUrl(MainActivity.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
 
         this.locationAPI = retrofit.create(LocationAPI::class.java)

@@ -12,7 +12,7 @@ data class CompositeItem(
     var devices: MutableList<Device> = mutableListOf(),
     var location: Location? = null,
     @SerializedName("@type")
-    val objType: String = "compositeItem"
+    override val objType: String = "compositeItem"
 ) : Scannable(), Serializable {
 
     fun toJsonWithRoot(): JsonObject {

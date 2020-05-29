@@ -20,7 +20,7 @@ interface CompositeItemAPI {
     fun updateCompositeItem(@Body compositeItem: JsonObject): Call<CompositeItem>
 
     @GET("composite/{id}")
-    fun getOneCompositeItem(@Path("id") id: Long): Call<CompositeItem>
+    fun getCompositeItem(@Path("id") id: Long): Call<CompositeItem>
 
     @Headers("Content-Type: application/json")
     @HTTP(method = "DELETE", path = "composite", hasBody = true)

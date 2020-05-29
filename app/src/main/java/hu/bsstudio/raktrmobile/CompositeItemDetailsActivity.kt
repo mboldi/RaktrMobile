@@ -1,5 +1,6 @@
 package hu.bsstudio.raktrmobile
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -12,7 +13,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
-import hu.bsstudio.raktrmobile.adapter.DevicesAdapter
+import hu.bsstudio.raktrmobile.adapter.DeviceInCompositeAdapter
 import hu.bsstudio.raktrmobile.model.CompositeItem
 import hu.bsstudio.raktrmobile.model.Location
 import hu.bsstudio.raktrmobile.network.interactor.CompositeItemInteractor
@@ -46,6 +47,12 @@ class CompositeItemDetailsActivity : AppCompatActivity() {
         setFieldValues()
         updateViewsEditable()
 
+        btnAddDeviceToComposite.setOnClickListener {
+            intent = Intent(this, ScannerActivity::class.java)
+            intent.putExtra(MainActivity.COMPOSITE_KEY, compositeItem)
+            startActivity(intent)
+        }
+
         btnBackComposite.setOnClickListener {
             finish()
         }
@@ -64,7 +71,11 @@ class CompositeItemDetailsActivity : AppCompatActivity() {
                         updateViewsEditable()
                     },
                     {
-                        Snackbar.make(btnSaveComposite, "Nem sikerült menteni", Snackbar.LENGTH_LONG)
+                        Snackbar.make(
+                            btnSaveComposite,
+                            "Nem sikerült menteni",
+                            Snackbar.LENGTH_LONG
+                        )
                             .show()
                     })
             } else {
@@ -77,7 +88,11 @@ class CompositeItemDetailsActivity : AppCompatActivity() {
                         updateViewsEditable()
                     },
                     {
-                        Snackbar.make(btnSaveComposite, "Nem sikerült menteni", Snackbar.LENGTH_LONG)
+                        Snackbar.make(
+                            btnSaveComposite,
+                            "Nem sikerült menteni",
+                            Snackbar.LENGTH_LONG
+                        )
                             .show()
                     })
             }
@@ -93,11 +108,44 @@ class CompositeItemDetailsActivity : AppCompatActivity() {
         rvCompositeDetailsDevices.layoutManager = LinearLayoutManager(this)
         rvCompositeDetailsDevices.addItemDecoration(divider)
 
+        interactor.getCompositeItem(
+            compositeItem,
+            this::handleGetItem
+        ) {
+            Snackbar.make(
+                btnBackComposite,
+                "Nem lehetett frissíteni az adatokat",
+                Snackbar.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+    private fun handleGetItem(compositeItem: CompositeItem) {
+        this.compositeItem = compositeItem
+
+        setFieldValues()
         loadItems()
     }
 
     private fun loadItems() {
-        val adapter = DevicesAdapter(this, compositeItem.devices)
+        val adapter = DeviceInCompositeAdapter(
+            this, compositeItem.devices
+        ) {
+            interactor.deleteDeviceFromCompositeItem(compositeItem, it,
+                { updatedItem ->
+                    compositeItem = updatedItem
+                    setFieldValues()
+                    loadItems()
+                },
+                {
+                    Snackbar.make(
+                        rvCompositeDetailsDevices,
+                        "Nem sikerült kitörölni az eszközt",
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                })
+        }
+
         rvCompositeDetailsDevices.adapter = adapter
     }
 

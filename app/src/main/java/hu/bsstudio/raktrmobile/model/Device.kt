@@ -19,7 +19,7 @@ data class Device(
     var value: Int = 0,
     var weight: Int = 0,
     @SerializedName("@type")
-    val objType: String = "device"
+    override val objType: String = "device"
 ) : Scannable(), Serializable {
 
     fun toJsonWithRoot(): JsonObject {

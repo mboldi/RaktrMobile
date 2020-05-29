@@ -25,11 +25,11 @@ interface RentAPI {
     fun updateRent(@Body rent: JsonObject): Call<Rent>
 
     @GET("rent/{id}")
-    fun getOneRent(@Path("id") id: Long): Call<Rent>
+    fun getRent(@Path("id") id: Long): Call<Rent>
 
     @Headers("Content-Type: application/json")
     @PUT("rent/{id}")
-    fun updateDeviceInRent(@Path("id") id: Long, @Body rentItem: RentItem): Call<Rent>
+    fun updateDeviceInRent(@Path("id") id: Long, @Body rentItem: JsonObject): Call<Rent>
 
     @Headers("Content-Type: application/json")
     @POST("rent/{id}")

@@ -48,12 +48,22 @@ class CompositeItemInteractor {
         runCallOnBackgroundThread(getCompositeItemsRequest, onSuccess, onError)
     }
 
+    fun getCompositeItem(
+        compositeItem: CompositeItem,
+        onSuccess: (CompositeItem) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
+        val getCompositeItemRequest = compositeItemAPI.getCompositeItem(compositeItem.id)
+        runCallOnBackgroundThread(getCompositeItemRequest, onSuccess, onError)
+    }
+
     fun addCompositeItem(
         compositeItem: CompositeItem,
         onSuccess: (CompositeItem) -> Unit,
         onError: (Throwable) -> Unit
     ) {
-        val addCompositeItemsRequest = compositeItemAPI.addCompositeItem(compositeItem.toJsonWithRoot())
+        val addCompositeItemsRequest =
+            compositeItemAPI.addCompositeItem(compositeItem.toJsonWithRoot())
         runCallOnBackgroundThread(addCompositeItemsRequest, onSuccess, onError)
     }
 
@@ -62,7 +72,8 @@ class CompositeItemInteractor {
         onSuccess: (CompositeItem) -> Unit,
         onError: (Throwable) -> Unit
     ) {
-        val deleteCompositeItemsRequest = compositeItemAPI.deleteCompositeItem(compositeItem.toJsonWithRoot())
+        val deleteCompositeItemsRequest =
+            compositeItemAPI.deleteCompositeItem(compositeItem.toJsonWithRoot())
         runCallOnBackgroundThread(deleteCompositeItemsRequest, onSuccess, onError)
     }
 
@@ -71,7 +82,30 @@ class CompositeItemInteractor {
         onSuccess: (CompositeItem) -> Unit,
         onError: (Throwable) -> Unit
     ) {
-        val updateCompositeItemsRequest = compositeItemAPI.updateCompositeItem(compositeItem.toJsonWithRoot())
-        runCallOnBackgroundThread(updateCompositeItemsRequest, onSuccess, onError)
+        val updateCompositeItemRequest =
+            compositeItemAPI.updateCompositeItem(compositeItem.toJsonWithRoot())
+        runCallOnBackgroundThread(updateCompositeItemRequest, onSuccess, onError)
+    }
+
+    fun deleteDeviceFromCompositeItem(
+        compositeItem: CompositeItem,
+        device: Device,
+        onSuccess: (CompositeItem) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
+        val deleteFromCompositeItemRequest =
+            compositeItemAPI.deleteDeviceFromComposite(compositeItem.id, device.toJsonWithRoot())
+        runCallOnBackgroundThread(deleteFromCompositeItemRequest, onSuccess, onError)
+    }
+
+    fun addDeviceToCompositeItem(
+        compositeItem: CompositeItem,
+        device: Device,
+        onSuccess: (CompositeItem) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
+        val deleteFromCompositeItemRequest =
+            compositeItemAPI.addDeviceToComposite(compositeItem.id, device.toJsonWithRoot())
+        runCallOnBackgroundThread(deleteFromCompositeItemRequest, onSuccess, onError)
     }
 }

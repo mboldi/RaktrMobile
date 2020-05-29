@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.li_device.view.*
 
 class DevicesAdapter(
     private val context: Context?,
-    private var devices: MutableList<Device>
+    private var devices: List<Device>
 ) : RecyclerView.Adapter<DevicesAdapter.ViewHolder>() {
 
     private val layoutInflater = LayoutInflater.from(context)

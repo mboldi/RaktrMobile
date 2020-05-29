@@ -23,5 +23,5 @@ interface DeviceAPI {
     fun updateDevice(@Body device: JsonObject): Call<Device>
 
     @GET("device/{id}")
-    fun getOneDevice(@Path("id") id: Long): Call<Device>
+    fun getDevice(@Path("id") id: Long): Call<Device>
 }

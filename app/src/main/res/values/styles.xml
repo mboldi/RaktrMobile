@@ -22,7 +22,7 @@
 
     <style name="MyDatePickerDialogTheme" parent="android:Theme.Material.Light.Dialog">
         <item name="android:colorAccent">@color/secondaryColor</item>
-        <item name="android:buttonStyle">@style/Widget.MaterialComponents.Button.TextButton</item>
+        <item name="android:buttonStyle">@style/Widget.MaterialComponents.Button</item>
         <item name="android:dialogCornerRadius">8dp</item>
     </style>
 
